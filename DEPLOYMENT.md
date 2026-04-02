@@ -147,9 +147,15 @@ sudo certbot --nginx -d yourdomain.com
 
 - View backend logs: `pm2 logs quantum-backend`
 - Monitor processes: `pm2 monit`
-- Deploy future updates automatically:
+- **Manual Automation**: Deploy future updates manually:
   ```bash
   cd /var/www/johny
   ./deploy.sh
   ```
-  *(This script pulls the latest code, runs database migrations, builds the app, and smoothly restarts the backend—zero manual copying needed!)*
+  
+- **Auto-Deploy Every 5 Minutes (Cron)**:
+  To let the server pull changes automatically every 5 minutes, run `crontab -e` and paste this at the bottom:
+  ```bash
+  */5 * * * * cd /var/www/johny && ./deploy.sh >> /var/www/johny/deploy.log 2>&1
+  ```
+  *(We built a safety mechanism into the script: if the code is already up-to-date, it skips the heavy build processes, keeping your server's CPU usage low!)*
