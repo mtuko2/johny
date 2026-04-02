@@ -1,0 +1,111 @@
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-bg);
+  padding: var(--space-lg);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.login-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--grad-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.login-header h1 {
+  font-size: 1.5rem;
+  color: var(--clr-text);
+}
+
+.login-header p {
+  font-size: 0.875rem;
+  color: var(--clr-text-muted);
+}
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+  color: #f87171;
+  font-size: 0.875rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pw-wrap {
+  position: relative;
+}
+
+.pw-wrap .form-control {
+  padding-right: 2.8rem;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--clr-text-subtle);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.pw-toggle:hover {
+  color: var(--clr-text);
+}
+
+.login-submit {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+.login-back {
+  text-align: center;
+  font-size: 0.825rem;
+  color: var(--clr-text-muted);
+  display: block;
+  transition: color 0.2s;
+}
+
+.login-back:hover {
+  color: var(--clr-text);
+}

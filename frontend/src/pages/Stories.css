@@ -1,0 +1,116 @@
+/* ─── Stories Page Header ────────────────────────── */
+.stories-page {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-2xl);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.section-head__left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.section-head__icon {
+  color: var(--clr-accent);
+}
+
+.section-head__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--clr-text);
+}
+
+/* ─── Grid ───────────────────────────────────────── */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ─── Skeleton ───────────────────────────────────── */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.skeleton-card {
+  overflow: hidden;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--clr-surface) 25%, var(--clr-surface-hover) 50%, var(--clr-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton--cover {
+  height: 200px;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.skeleton-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton--tag  { height: 20px; width: 60px; }
+.skeleton--title{ height: 26px; width: 80%; }
+.skeleton--text { height: 14px; width: 100%; }
+.skeleton--text.short { width: 65%; }
+
+.skeleton--meta-item {
+  height: 12px;
+  width: 40px;
+}
+
+.skeleton-meta {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+/* ─── Empty State ────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl);
+  gap: 0.75rem;
+  min-height: 340px;
+}
+
+.empty-icon {
+  color: var(--clr-text-subtle);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  color: var(--clr-text);
+}
+
+.empty-state p {
+  color: var(--clr-text-muted);
+}

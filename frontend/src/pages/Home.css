@@ -1,0 +1,189 @@
+/* ───────────────────────────────────────
+   Home Page
+─────────────────────────────────────── */
+
+.home-page {
+  padding-bottom: var(--space-2xl);
+}
+
+/* ─── Hero ─────────────────────────────────────────── */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35vh; /* Reduced from 50vh */
+  overflow: hidden;
+  padding: 0.5rem 0 1.5rem 0; /* Tightened top and bottom */
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-lg);
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  background: rgba(91, 127, 255, 0.12);
+  border: 1px solid rgba(91, 127, 255, 0.3);
+  color: var(--clr-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 3.5vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--clr-text);
+  white-space: nowrap;
+}
+
+.hero__title em {
+  font-style: normal;
+}
+
+.hero__sub {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--clr-text-muted);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* Ambient Orbs */
+.hero__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero__orb--1 {
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-70%);
+  background: rgba(91, 127, 255, 0.15);
+  animation: orb-float 10s ease-in-out infinite;
+}
+
+.hero__orb--2 {
+  width: 350px;
+  height: 350px;
+  bottom: -100px;
+  right: 5%;
+  background: rgba(167, 139, 250, 0.12);
+  animation: orb-float 14s ease-in-out infinite reverse;
+}
+
+/* ─── Recent Stories Section ─────────────────── */
+.home-stories {
+  margin-top: -0.5rem; /* Adjusted to sit naturally with tighter hero padding */
+  position: relative;
+  z-index: 5;
+  margin-bottom: var(--space-2xl);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.section-header__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-icon {
+  color: var(--clr-accent);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Shared Layout Components (Skeletons/Grid) ─── */
+.story-grid,
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.skeleton-card {
+  overflow: hidden;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--clr-surface) 25%, var(--clr-surface-hover) 50%, var(--clr-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton--cover {
+  height: 180px;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.skeleton-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton--tag  { height: 18px; width: 50px; }
+.skeleton--title{ height: 24px; width: 85%; }
+
+.skeleton-meta {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+.skeleton--meta-item {
+  height: 10px;
+  width: 45px;
+}
+
+/* ─── Animations ─── */
+@keyframes orb-float {
+  0%, 100% { transform: translateX(-70%) translateY(0); }
+  50%       { transform: translateX(-70%) translateY(-30px); }
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 40vh;
+  }
+}
