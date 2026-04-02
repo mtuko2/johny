@@ -114,3 +114,31 @@
 .empty-state p {
   color: var(--clr-text-muted);
 }
+
+/* ─── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .stories-page {
+    padding-top: var(--space-lg);
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .story-grid,
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .empty-state {
+    padding: var(--space-lg);
+    min-height: 260px;
+  }
+}
+
