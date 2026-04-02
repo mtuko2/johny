@@ -231,6 +231,39 @@ app.delete('/api/admin/stories/:id', authenticateToken, async (req: AuthRequest,
   }
 });
 
-app.listen(port, () => {
-  console.log(`[server]: Running at http://localhost:${port}`);
+// ─── Initialization ───────────────────────────────────────────
+async function initAdmin() {
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@thequantumtales.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'quantum2026';
+
+  try {
+    const admin = await prisma.user.findUnique({ where: { email: adminEmail } });
+    if (!admin) {
+      console.log('👤 No admin found. Creating default admin...');
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      await prisma.user.create({
+        data: {
+          email: adminEmail,
+          password: hashedPassword,
+          name: 'Administrator',
+          role: 'ADMIN',
+        },
+      });
+      console.log('✅ Default admin created successfully.');
+    } else if (admin.role !== 'ADMIN') {
+      await prisma.user.update({
+        where: { id: admin.id },
+        data: { role: 'ADMIN' },
+      });
+      console.log('🆙 Existing user promoted to ADMIN role.');
+    }
+  } catch (err) {
+    console.error('❌ Failed to initialize admin:', err);
+  }
+}
+
+initAdmin().then(() => {
+  app.listen(port, () => {
+    console.log(`[server]: Running at http://localhost:${port}`);
+  });
 });
