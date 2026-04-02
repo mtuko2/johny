@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createStory } from '../api';
+import { adminCreateStory } from '../api';
 import { Send, AlertCircle, ArrowLeft } from 'lucide-react';
 import './CreateStory.css';
 
@@ -41,7 +41,7 @@ export default function CreateStory() {
         tags: tagsArray.length > 0 ? tagsArray : undefined,
       };
 
-      const story = await createStory(payload);
+      const story = await adminCreateStory(payload);
       navigate(`/story/${story.id}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
