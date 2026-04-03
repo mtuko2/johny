@@ -77,6 +77,21 @@ export const authLogin = async (email: string, password: string): Promise<{ toke
 };
 
 // ─── Protected Stories API ─────────────────────────────────────
+export const adminUploadCover = async (file: File): Promise<{ url: string }> => {
+  const token = getToken();
+  const res = await fetch(`${API_URL}/admin/upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: file,
+  });
+  if (res.status === 401) throw new Error('UNAUTHORIZED');
+  if (!res.ok) throw new Error('Failed to upload image');
+  return res.json();
+};
+
 export const adminFetchStories = async (): Promise<Story[]> => {
   const res = await fetch(`${API_URL}/admin/stories`, { headers: authHeaders() });
   if (res.status === 401) throw new Error('UNAUTHORIZED');

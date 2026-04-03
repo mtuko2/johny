@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'quantum-secret-change-me';
 
 app.use(cors());
 app.use(express.json());
+app.use('/api/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Extend Express Request type to include user
 interface AuthRequest extends Request {
@@ -120,6 +123,30 @@ app.get('/api/stories/:id', async (req, res) => {
 });
 
 // ─── Protected Story Routes ────────────────────────────────────────
+
+// POST upload cover image
+app.post('/api/admin/upload', authenticateToken, express.raw({ type: ['image/png', 'image/jpeg'], limit: '5mb' }), (req: AuthRequest, res: Response) => {
+  if (!req.body || !Buffer.isBuffer(req.body)) {
+    res.status(400).json({ error: 'No image data provided or invalid format. Please upload a PNG or JPEG.' });
+    return;
+  }
+  
+  const ext = req.headers['content-type'] === 'image/png' ? 'png' : 'jpg';
+  const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+  const uploadsDir = path.join(__dirname, '../uploads');
+  
+  try {
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    fs.writeFileSync(path.join(uploadsDir, filename), req.body);
+    res.json({ url: `/api/uploads/${filename}` });
+  } catch (err) {
+    console.error('File upload error:', err);
+    res.status(500).json({ error: 'Failed to save uploaded file' });
+  }
+});
+
 // GET all stories (Admin sees all, User sees only theirs)
 app.get('/api/admin/stories', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {

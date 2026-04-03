@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { adminCreateStory, adminUpdateStory, adminFetchStories, type Story } from '../../api';
+import { adminCreateStory, adminUpdateStory, adminFetchStories, adminUploadCover, type Story } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import {
   Save, Eye, ArrowLeft, Tag, User, Image,
@@ -16,6 +16,7 @@ export default function AdminWrite() {
 
   const [loading, setLoading] = useState(false);
   const [loadingStory, setLoadingStory] = useState(isEdit);
+  const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
@@ -57,6 +58,26 @@ export default function AdminWrite() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setSaved(false);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+      setError('Only PNG or JPEG images are allowed.');
+      return;
+    }
+    setUploading(true);
+    setError('');
+    try {
+      const { url } = await adminUploadCover(file);
+      setForm(prev => ({ ...prev, coverUrl: url }));
+      setSaved(false);
+    } catch {
+      setError('Failed to upload image.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const buildPayload = () => ({
@@ -245,8 +266,19 @@ Use blank lines to separate paragraphs."
 
               <div className="form-group">
                 <label className="form-label" htmlFor="story-cover">
-                  <Image size={13} /> Cover Image URL
+                  <Image size={13} /> Cover Image
                 </label>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                  <input
+                    id="story-cover-file"
+                    type="file"
+                    className="form-control"
+                    accept="image/png, image/jpeg"
+                    onChange={handleFileUpload}
+                    disabled={uploading}
+                    style={{ padding: '0.3rem' }}
+                  />
+                </div>
                 <input
                   id="story-cover"
                   name="coverUrl"
@@ -254,10 +286,11 @@ Use blank lines to separate paragraphs."
                   className="form-control"
                   value={form.coverUrl}
                   onChange={handleChange}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Or provide an image URL"
                 />
+                {uploading && <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>Uploading image...</div>}
                 {form.coverUrl && (
-                  <div className="cover-preview">
+                  <div className="cover-preview" style={{ marginTop: '0.5rem' }}>
                     <img src={form.coverUrl} alt="Cover preview" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                 )}
