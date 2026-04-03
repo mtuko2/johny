@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { adminCreateStory, adminUpdateStory, adminFetchStories, adminUploadCover, type Story } from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import {
   Save, Eye, ArrowLeft, Tag, User, Image,
   BarChart3, PenLine, LogOut, AlertCircle, CheckCircle
@@ -58,6 +60,23 @@ export default function AdminWrite() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setSaved(false);
+  };
+
+  const handleQuillChange = (content: string) => {
+    setForm(prev => ({ ...prev, content }));
+    setSaved(false);
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{'color': []}, {'background': []}],
+      [{'header': 1}, {'header': 2}, 'blockquote', 'code-block'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+      [{'align': []}],
+      ['link', 'clean']
+    ]
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,17 +222,13 @@ export default function AdminWrite() {
                 aria-label="Story title"
               />
 
-              <textarea
-                id="story-content"
-                name="content"
-                required
-                className="content-editor"
+              <ReactQuill
+                theme="snow"
                 value={form.content}
-                onChange={handleChange}
-                placeholder="Start writing your story here…
-
-Use blank lines to separate paragraphs."
-                aria-label="Story content"
+                onChange={handleQuillChange}
+                modules={quillModules}
+                placeholder="Start writing your story here…"
+                className="content-editor quill-editor"
               />
 
               <div className="write-stats">

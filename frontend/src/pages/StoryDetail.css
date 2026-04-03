@@ -88,7 +88,8 @@
   max-width: 720px;
 }
 
-.detail-body__inner p {
+.detail-body__inner.html-content p, 
+.detail-body__inner.html-content li {
   font-size: 1.15rem;
   line-height: 1.85;
   color: var(--clr-text);
@@ -97,8 +98,42 @@
   opacity: 0.9;
 }
 
-.detail-body__inner p:last-child {
+.detail-body__inner.html-content p:last-child {
   margin-bottom: 0;
+}
+
+.detail-body__inner.html-content h1,
+.detail-body__inner.html-content h2,
+.detail-body__inner.html-content h3 {
+  font-family: var(--font-serif);
+  color: var(--clr-text);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.detail-body__inner.html-content h1 { font-size: 2.25rem; }
+.detail-body__inner.html-content h2 { font-size: 1.75rem; }
+.detail-body__inner.html-content h3 { font-size: 1.4rem; }
+
+.detail-body__inner.html-content ul,
+.detail-body__inner.html-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-body__inner.html-content blockquote {
+  border-left: 3px solid var(--clr-accent);
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  color: var(--clr-text-muted);
+}
+
+.detail-body__inner.html-content a {
+  color: var(--clr-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* ─── Footer Actions ─────────────────────────────── */

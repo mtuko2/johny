@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchStoryById, type Story } from '../api';
 import { ArrowLeft, Clock, User, BookOpen, Tag } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import './StoryDetail.css';
 
 export default function StoryDetail() {
@@ -111,11 +112,16 @@ export default function StoryDetail() {
 
         {/* Body */}
         <div className="detail-body">
-          <div className="detail-body__inner">
-            {story.content.split('\n').filter(p => p.trim()).map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
-            ))}
-          </div>
+          <div 
+            className="detail-body__inner html-content"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                story.content.includes('<') 
+                  ? story.content 
+                  : story.content.replace(/\n\n/g, '<br/><br/>').replace(/\n/g, '<br/>')
+              )
+            }}
+          />
         </div>
 
         {/* Footer Actions */}

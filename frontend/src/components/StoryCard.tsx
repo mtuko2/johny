@@ -9,7 +9,8 @@ interface StoryCardProps {
 }
 
 export function StoryCard({ story, featured = false }: StoryCardProps) {
-  const excerpt = story.content.substring(0, featured ? 220 : 120).trim() + '…';
+  const textContent = new DOMParser().parseFromString(story.content, 'text/html').body.textContent || '';
+  const excerpt = textContent.substring(0, featured ? 220 : 120).trim() + '…';
   const date = new Date(story.createdAt).toLocaleDateString('en-US', {
     month: 'short', day: 'numeric', year: 'numeric',
   });
