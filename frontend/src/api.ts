@@ -7,6 +7,8 @@ export interface Story {
   content: string;
   author: string;
   coverUrl: string | null;
+  status: 'PUBLISHED' | 'DRAFT' | 'SCHEDULED';
+  scheduledPublishAt: string | null;
   tags: Tag[];
   createdAt: string;
   updatedAt: string;
@@ -100,7 +102,7 @@ export const adminFetchStories = async (): Promise<Story[]> => {
 };
 
 export const adminCreateStory = async (data: {
-  title: string; content: string; author?: string; coverUrl?: string; tags?: string[];
+  title: string; content: string; author?: string; coverUrl?: string; tags?: string[]; status?: string; scheduledPublishAt?: string | null;
 }): Promise<Story> => {
   const res = await fetch(`${API_URL}/admin/stories`, {
     method: 'POST',
@@ -113,7 +115,7 @@ export const adminCreateStory = async (data: {
 };
 
 export const adminUpdateStory = async (id: string, data: {
-  title: string; content: string; author?: string; coverUrl?: string; tags?: string[];
+  title: string; content: string; author?: string; coverUrl?: string; tags?: string[]; status?: string; scheduledPublishAt?: string | null;
 }): Promise<Story> => {
   const res = await fetch(`${API_URL}/admin/stories/${id}`, {
     method: 'PUT',

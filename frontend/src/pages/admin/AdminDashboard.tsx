@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                 <span>Title</span>
                 <span>Author</span>
                 <span>Tags</span>
-                <span>Published</span>
+                <span>Status</span>
                 <span>Actions</span>
               </div>
               {filtered.map(story => (
@@ -190,7 +190,9 @@ export default function AdminDashboard() {
                     {story.tags.length > 2 && <span className="chip chip-sm">+{story.tags.length - 2}</span>}
                   </span>
                   <span className="row-date">
-                    {new Date(story.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {story.status === 'DRAFT' && <span className="chip chip-sm" style={{backgroundColor: '#e2e8f0', color: '#475569'}}>Draft</span>}
+                    {story.status === 'SCHEDULED' && <span className="chip chip-sm" style={{backgroundColor: '#fef08a', color: '#854d0e', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>Sch: {new Date(story.scheduledPublishAt!).toLocaleDateString()}</span>}
+                    {story.status === 'PUBLISHED' && <span className="chip chip-sm" style={{backgroundColor: '#bbf7d0', color: '#166534'}}>{new Date(story.createdAt).toLocaleDateString()}</span>}
                   </span>
                   <span className="row-actions">
                     <Link

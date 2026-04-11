@@ -101,6 +101,12 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
 app.get('/api/stories', async (_req, res) => {
   try {
     const stories = await prisma.story.findMany({
+      where: {
+        OR: [
+          { status: 'PUBLISHED' },
+          { status: 'SCHEDULED', scheduledPublishAt: { lte: new Date() } }
+        ]
+      },
       orderBy: { createdAt: 'desc' },
       include: { tags: true },
     });
@@ -112,11 +118,17 @@ app.get('/api/stories', async (_req, res) => {
 
 app.get('/api/stories/:id', async (req, res) => {
   try {
-    const story = await prisma.story.findUnique({
-      where: { id: req.params.id },
+    const story = await prisma.story.findFirst({
+      where: { 
+        id: req.params.id,
+        OR: [
+          { status: 'PUBLISHED' },
+          { status: 'SCHEDULED', scheduledPublishAt: { lte: new Date() } }
+        ]
+      },
       include: { tags: true, authorRef: { select: { name: true } } },
     });
-    if (!story) { res.status(404).json({ error: 'Story not found' }); return; }
+    if (!story) { res.status(404).json({ error: 'Story not found or not published' }); return; }
     res.json(story);
   } catch {
     res.status(500).json({ error: 'Failed to fetch story' });
@@ -168,7 +180,7 @@ app.get('/api/admin/stories', authenticateToken, async (req: AuthRequest, res: R
 // POST create story
 app.post('/api/admin/stories', authenticateToken, async (req: AuthRequest, res: Response) => {
   const { userId } = req.user!;
-  const { title, content, author, coverUrl, tags } = req.body;
+  const { title, content, author, coverUrl, tags, status, scheduledPublishAt } = req.body;
 
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -181,6 +193,8 @@ app.post('/api/admin/stories', authenticateToken, async (req: AuthRequest, res: 
         author: author || user.name, // Defaults to registered name
         coverUrl: coverUrl || null,
         userId,
+        status: status || 'PUBLISHED',
+        scheduledPublishAt: scheduledPublishAt ? new Date(scheduledPublishAt) : null,
         tags: tags?.length ? {
           connectOrCreate: tags.map((tag: string) => ({
             where: { name: tag },
@@ -201,7 +215,7 @@ app.post('/api/admin/stories', authenticateToken, async (req: AuthRequest, res: 
 app.put('/api/admin/stories/:id', authenticateToken, async (req: AuthRequest, res: Response) => {
   const { userId, role } = req.user!;
   const id = String(req.params.id);
-  const { title, content, author, coverUrl, tags } = req.body;
+  const { title, content, author, coverUrl, tags, status, scheduledPublishAt } = req.body;
 
   try {
     // Check ownership
@@ -224,6 +238,8 @@ app.put('/api/admin/stories/:id', authenticateToken, async (req: AuthRequest, re
         content,
         author: author || existing.author,
         coverUrl: coverUrl || null,
+        status: status || existing.status,
+        scheduledPublishAt: scheduledPublishAt !== undefined ? (scheduledPublishAt ? new Date(scheduledPublishAt) : null) : existing.scheduledPublishAt,
         tags: tags?.length ? {
           connectOrCreate: tags.map((tag: string) => ({
             where: { name: tag },

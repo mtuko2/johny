@@ -28,6 +28,8 @@ export default function AdminWrite() {
     author: user?.name || '',
     coverUrl: '',
     tags: '',
+    status: 'PUBLISHED',
+    scheduledPublishAt: '',
   });
 
   // Load existing story for edit
@@ -44,6 +46,8 @@ export default function AdminWrite() {
             author: s.author,
             coverUrl: s.coverUrl || '',
             tags: s.tags.map((t: Story['tags'][0]) => t.name).join(', '),
+            status: s.status || 'PUBLISHED',
+            scheduledPublishAt: s.scheduledPublishAt ? new Date(new Date(s.scheduledPublishAt).getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 16) : '',
           });
         } else {
           navigate('/admin', { replace: true });
@@ -57,7 +61,7 @@ export default function AdminWrite() {
       .finally(() => setLoadingStory(false));
   }, [id, isEdit, logout, navigate]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setSaved(false);
   };
@@ -104,6 +108,8 @@ export default function AdminWrite() {
     content: form.content,
     author: form.author || user?.name || 'Anonymous',
     coverUrl: form.coverUrl || undefined,
+    status: form.status,
+    scheduledPublishAt: form.status === 'SCHEDULED' ? (form.scheduledPublishAt ? new Date(form.scheduledPublishAt).toISOString() : null) : null,
     tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
   });
 
@@ -195,7 +201,7 @@ export default function AdminWrite() {
               )}
               <button type="submit" id="publish-btn" className="btn btn-primary" disabled={loading}>
                 <Save size={15} />
-                {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Publish Story'}
+                {loading ? 'Saving…' : form.status === 'DRAFT' ? 'Save Draft' : form.status === 'SCHEDULED' ? 'Schedule Story' : isEdit ? 'Save Changes' : 'Publish Story'}
               </button>
             </div>
           </div>
@@ -241,6 +247,40 @@ export default function AdminWrite() {
             {/* Sidebar Fields */}
             <div className="write-meta-col glass-card">
               <h3 className="meta-col-title">Story Details</h3>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="story-status">
+                  Status
+                </label>
+                <select 
+                  id="story-status"
+                  name="status"
+                  className="form-control"
+                  value={form.status}
+                  onChange={handleChange}
+                >
+                  <option value="PUBLISHED">Publish Now</option>
+                  <option value="DRAFT">Save as Draft</option>
+                  <option value="SCHEDULED">Schedule for Later</option>
+                </select>
+              </div>
+
+              {form.status === 'SCHEDULED' && (
+                <div className="form-group">
+                  <label className="form-label" htmlFor="story-schedule">
+                    Publish Date & Time
+                  </label>
+                  <input
+                    id="story-schedule"
+                    name="scheduledPublishAt"
+                    type="datetime-local"
+                    className="form-control"
+                    value={form.scheduledPublishAt}
+                    onChange={handleChange}
+                    required={form.status === 'SCHEDULED'}
+                  />
+                </div>
+              )}
 
               <div className="form-group">
                 <label className="form-label" htmlFor="story-author">
